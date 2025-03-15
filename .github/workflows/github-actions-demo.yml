@@ -1,0 +1,15 @@
+name: Check Passport Website
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+jobs:
+  check-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping website
+        run: |
+          if curl -s --head https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/ | grep "200 OK"; then
+            echo "Site is up!"
+          else
+            echo "Site is down!"
+          fi
