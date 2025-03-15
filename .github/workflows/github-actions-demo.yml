@@ -7,7 +7,7 @@ on:
       url:
         description: 'Website URL to check'
         required: false
-        default: 'https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/
+        default: 'https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/'
 jobs:
   check-site:
     runs-on: ubuntu-latest
