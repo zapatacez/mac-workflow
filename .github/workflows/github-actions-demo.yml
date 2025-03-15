@@ -12,8 +12,10 @@ jobs:
         run: |
           URL=https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/
           echo "Checking $URL"
-          curl -s -L --head "$URL"
-          if curl -s -L --head "$URL" | grep -E "^HTTP/[0-2]\.?[0-1]? 200( OK)?"; then
+          # Run curl with output for debugging, but don't fail the script
+          curl -s -L --head "$URL" || true
+          # Check status, ignore curl errors
+          if curl -s -L --head "$URL" | grep -E "^HTTP/[0-2]\.?[0-1]? 200( OK)?" > /dev/null 2>&1; then
             echo "Site is up!"
             echo "SITE_UP=true" >> $GITHUB_OUTPUT
           else
@@ -24,5 +26,5 @@ jobs:
         if: steps.check.outputs.SITE_UP == 'true'
         run: |
           curl -X POST -H "Content-Type: application/json" \
-            -d '{"content": "Hey Cesar! @memeai. The passport site is back online! Visit https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/ now!"}' \
+            -d '{"content": "Hey Cesar! @memeai The passport site is back online! Visit https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/ now!"}' \
             ${{ secrets.DISCORD_WEBHOOK }}
