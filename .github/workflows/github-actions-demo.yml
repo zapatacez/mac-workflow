@@ -1,15 +1,21 @@
-name: Check Passport Website
+name: Check Passport Website MAC
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
+    - cron: '0 * * * *'  # Runs every hour
   workflow_dispatch:
+    inputs:
+      url:
+        description: 'Website URL to check'
+        required: false
+        default: 'https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/
 jobs:
   check-site:
     runs-on: ubuntu-latest
     steps:
       - name: Ping website
         run: |
-          if curl -s --head https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/ | grep "200 OK"; then
+          URL=${{ github.event.inputs.url || 'https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/' }}
+          if curl -s --head "$URL" | grep "200 OK"; then
             echo "Site is up!"
           else
             echo "Site is down!"
