@@ -2,6 +2,7 @@ name: Check Passport Website
 on:
   schedule:
     - cron: '0 * * * *'  # Every hour
+  workflow_dispatch:
 jobs:
   check-site:
     runs-on: ubuntu-latest
