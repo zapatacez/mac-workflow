@@ -1,8 +1,8 @@
 name: Monitor Passport Website
 on:
   schedule:
-    - cron: '*/15 * * * *'  # Runs every 15 minutes
-  workflow_dispatch:        # Still allows manual triggering
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:        # Manual trigger for testing
 jobs:
   check-site:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
         run: |
           URL=https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/
           echo "Checking $URL"
-          curl -s -L --head "$URL"  # Debug output to logs
+          curl -s -L --head "$URL"
           if curl -s -L --head "$URL" | grep -E "^HTTP/[0-2]\.?[0-1]? 200( OK)?"; then
             echo "Site is up!"
             echo "SITE_UP=true" >> $GITHUB_OUTPUT
@@ -20,8 +20,9 @@ jobs:
             echo "Site is down!"
             echo "SITE_UP=false" >> $GITHUB_OUTPUT
           fi
-      - name: Send notification if site is up
+      - name: Notify Discord if site is up
         if: steps.check.outputs.SITE_UP == 'true'
         run: |
-          echo "The passport site is back online! Visit $URL to book your appointment."
-          # Placeholder for notification; see Step 2
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"content": "Hey Cesar! The passport site is back online! Visit https://citaspasaporte.migraciones.gob.pe/citas-pasaporte-v2/ now!"}' \
+            ${{ secrets.DISCORD_WEBHOOK }}
